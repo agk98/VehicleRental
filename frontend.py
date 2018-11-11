@@ -41,8 +41,11 @@ class Employee_login(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self,parent)
 		def hello():
-			self.emp_id=self.emp_id.get("1.0","end-1c")
-			self.password=self.password.get("1.0","end-1c")
+			self.e_id=self.emp_id.get("1.0","end-1c")
+			self.pas=self.password.get("1.0","end-1c")
+
+			self.emp_id.delete("1.0","end")
+			self.password.delete("1.0","end")
 			#enter code to check whether entered details are correct
 
 			controller.show_frame(Customer_details)
@@ -71,10 +74,15 @@ class Customer_details(tk.Frame):
 		tk.Frame.__init__(self,parent)
 
 		def enter():
-			self.c_name=self.c_name.get("1.0","end-1c")
-			self.c_phno=int(self.c_phno.get("1.0","end-1c"))
-			self.c_eid=self.c_eid.get("1.0","end-1c")
-			self.c_addr=self.c_addr.get("1.0","end-1c")
+			self.cname=self.c_name.get("1.0","end-1c")
+			self.cphno=int(self.c_phno.get("1.0","end-1c"))
+			self.ceid=self.c_eid.get("1.0","end-1c")
+			self.caddr=self.c_addr.get("1.0","end-1c")
+
+			self.c_name.delete("1.0","end")
+			self.c_phno.delete("1.0","end")
+			self.c_eid.delete("1.0","end")
+			self.c_addr.delete("1.0","end")
 			# insert code to insert values into customer table
 
 			controller.show_frame(VehicleType)
@@ -143,12 +151,13 @@ class CAR(tk.Frame):
 		def asign():
 			CarChoice=var.get()
 		c_val=1
+		self.CarChoice=None
 		for val, car in enumerate(cars):
 			tk.Radiobutton(self, text=car, padx=20,variable=var, command=asign, value=val).grid(row=1, column=c_val, sticky='w')
 			c_val=c_val+1
-		CarChoice=None
+		
 		def asign():
-			CarChoice=var.get()
+			self.CarChoice=var.get()
 		def opencal(msg):
 			popup=tk.Toplevel()
 			def print_sel():
