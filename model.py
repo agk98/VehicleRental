@@ -1,23 +1,28 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+import os
+import sys
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base 
+from sqlalchemy import Column,Integer,String,DateTime,ForeignKey
+from sqlalchemy.orm import relationship
 
 Base=declarative_base()
 
-class Employees(Base):
-	__tablename__="Employees"
+class Customer(Base):
 
-	name= Column('name', String)
-	id= Column('Emp_id', String, primary_key=True, unique=True)
+	__tablename__='Customers'
 
-engine=create_engine('sqlite:///users.db')
-Base.metadata.create_all(bind=engine)
-Session=sessionmaker(bind=engine)
+	customer_id=Column(Integer,primary_key=True)
+	customer_name=Column(String(40),nullable=False)
+	customer_phno=Column(String(10),nullable=False)
+	customer_email=Column(String(30),nullable=False)
+	customer_address=Column(String(50),nullable=False)
 
-session=Session()
 
-users=session.query(Employees).all()
-for user in users:
-	print("User with username=%s and id=%s"%(user.username, user.id))
 
-session.close()
+
+
+
+
+
+engine = create_engine("sqlite:///Vehicle.db")
+Base.metadata.create_all(engine)

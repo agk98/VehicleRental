@@ -1,10 +1,10 @@
 import tkinter as tk
 import datetime
-from tkinter import ttk
+from tkinter.ttk import *
 from tkinter import *
 from tkcalendar import Calendar
 from datetime import date 
-
+from app import *
 
 
 LARGE_FONT=("Verdana", 12)
@@ -23,18 +23,97 @@ class TSE(tk.Tk):
 
 		self.frames={}							
 
-		for F in (Employee_login,Customer_details, VehicleType, CAR, BIKE): 
+		for F in (Admin_Login, Admin,Employee_login,Customer_details, VehicleType, CAR, BIKE): 
 
 			frame=F(container, self)		
 
 			self.frames[F]=frame
 			frame.grid(row=0, column=0, sticky="nsew")
 
-		self.show_frame(Employee_login)			
+		self.show_frame(Admin_Login)			
 
 	def show_frame(self, cont):
 		frame=self.frames[cont]
 		frame.tkraise()	
+
+
+class Admin_Login(Frame):
+	def __init__(self, parent, controller):
+		Frame.__init__(self, parent)
+		self.controller=controller
+		self.password="irule"
+
+		label1=Label(self, text="ADMIN LOGIN", font=LARGE_FONT)
+		label2=Label(self, text="Admin Password", font=SMALL_FONT)
+		self.entered_pass=Text(self, height=2, width=30)
+		login=Button(self, text="LOGIN", command=self.checking)
+
+		label1.grid(row=0, column=1, sticky='w')
+		label2.grid(row=1, column=0, sticky='w')
+		self.entered_pass.grid(row=1, column=1, sticky='w')
+		login.grid(row=2, column=0, sticky='w')
+	def checking(self):
+		if self.entered_pass.get("1.0","end-1c")==self.password:
+			self.controller.show_frame(Admin)
+		else:
+			app.destroy()
+
+class Admin(Frame):
+	
+
+	def __init__(self, parent, controller):
+		Frame.__init__(self, parent)
+		self.controller=controller
+		self.Top=Label(self, text="ENTER EMPLOYEE DETAILS", font=LARGE_FONT)
+		self.Id=Label(self, text="Employee ID:", font=SMALL_FONT)
+		self.name=Label(self, text="Name:", font=SMALL_FONT)
+		self.date_of_birth=Label(self, text="Date Of Birth:", font=SMALL_FONT)
+		self.email_id=Label(self, text="Email ID:", font=SMALL_FONT)
+		self.password=Label(self, text="Password:", font=SMALL_FONT)
+
+		self.EID=Text(self, height=2, width=30)
+		self.ename=Text(self, height=2, width=30)
+		self.edob=Text(self, height=2, width=30)
+		self.eemail_id=Text(self, height=2, width=30)
+		self.Password=Text(self, height=2, width=30)
+
+		self.Top.grid(row=0, column=1, sticky='w')
+		self.Id.grid(row=1, column=0, sticky='w')
+		self.EID.grid(row=1, column=1, sticky='w')
+		self.name.grid(row=2, column=0, sticky='w')
+		self.ename.grid(row=2, column=1, sticky='w')
+		self.date_of_birth.grid(row=3, column=0, sticky='w')
+		self.edob.grid(row=3, column=1, sticky='w')
+		self.email_id.grid(row=4, column=0, sticky='w')
+		self.eemail_id.grid(row=4, column=1, sticky='w')
+		self.password.grid(row=5, column=0, sticky='w')
+		self.Password.grid(row=5, column=1, sticky='w')
+
+		Add=Button(self, text="ADD", command=self.add)
+		Add.grid(row=6, column=0, sticky='w')
+
+	def add(self):
+		self.emp_id=self.EID.get("1.0","end-1c")
+		self.emp_name=self.ename.get("1.0","end-1c")
+		self.emp_dob=self.edob.get("1.0","end-1c")
+		self.emp_emailID=self.eemail_id.get("1.0","end-1c")
+		self.emp_password=self.Password.get("1.0","end-1c")
+
+		self.EID.delete("1.0","end")
+		self.ename.delete("1.0","end")
+		self.edob.delete("1.0","end")
+		self.eemail_id.delete("1.0","end")
+		self.Password.delete("1.0","end")
+			# insert code to insert values into customer table
+
+		add_employee(self.emp_id, self.emp_name, self.emp_dob, self.emp_emailID, self.emp_password)
+
+		controller.show_frame(Admin_Login)
+
+
+
+
+
 
 
 class Employee_login(tk.Frame):
@@ -70,24 +149,11 @@ class Employee_login(tk.Frame):
 		button1.grid(row=4, column=0, sticky='W')
 
 class Customer_details(tk.Frame):
+
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self,parent)
+		self.controller  = controller
 
-		def enter():
-			self.cname=self.c_name.get("1.0","end-1c")
-			self.cphno=int(self.c_phno.get("1.0","end-1c"))
-			self.ceid=self.c_eid.get("1.0","end-1c")
-			self.caddr=self.c_addr.get("1.0","end-1c")
-
-			self.c_name.delete("1.0","end")
-			self.c_phno.delete("1.0","end")
-			self.c_eid.delete("1.0","end")
-			self.c_addr.delete("1.0","end")
-			# insert code to insert values into customer table
-
-			controller.show_frame(VehicleType)
-
-		
 		label1=tk.Label(self, text="CUSTOMER DETAILS", font=LARGE_FONT)
 		label2=tk.Label(self, text="Name", font=SMALL_FONT)
 		label3=tk.Label(self, text="Phone Number", font=SMALL_FONT)
@@ -112,8 +178,30 @@ class Customer_details(tk.Frame):
 
 		button1=tk.Button(self, text="CANCEL", command=lambda: controller.show_frame(Employee_login))
 		button1.grid(row=5, column=1, sticky='w')
-		button2=tk.Button(self, text="NEXT", command=enter)
+		button2=tk.Button(self, text="NEXT", command=self.enter)
 		button2.grid(row=5, column=2, sticky='w')
+
+	def enter(self):
+		
+			
+		self.cname=self.c_name.get("1.0","end-1c")
+		self.cphno=self.c_phno.get("1.0","end-1c")
+		self.ceid=self.c_eid.get("1.0","end-1c")
+		self.caddr=self.c_addr.get("1.0","end-1c")
+
+		self.c_name.delete("1.0","end")
+		self.c_phno.delete("1.0","end")
+		self.c_eid.delete("1.0","end")
+		self.c_addr.delete("1.0","end")
+			# insert code to insert values into customer table
+
+		add_customer(self.cname,self.cphno,self.ceid,self.caddr)
+
+		controller.show_frame(VehicleType)
+	
+
+
+	
 
 class VehicleType(tk.Frame):
 	
@@ -130,6 +218,7 @@ class VehicleType(tk.Frame):
 		button1.grid(row=1, column=0, sticky='e')
 		button2.grid(row=1, column=3, sticky='e')
 		button3.grid(row=2, column=0, sticky='w') 
+
 class CAR(tk.Frame):
 
 	
@@ -167,11 +256,13 @@ class CAR(tk.Frame):
 			la=ttk.Label(popup, text=msg, font=LARGE_FONT)
 			la.grid(row=0,column=0, sticky='w')
 
-			cal=Calendar(popup, font="Arial 14", selectmode='day',
+			self.cal=Calendar(popup, font="Arial 14", selectmode='day',
 						cursor='hand1', year=2018, month=2, day=5)
 			bu=ttk.Button(popup, text="OK", command=print_sel)
 
-			cal.grid(row=1,column=0, sticky='w')
+			print(self.cal)
+
+			self.cal.grid(row=1,column=0, sticky='w')
 			bu.grid(row=2, column=0, sticky='w')
 
 			popup.mainloop()
@@ -197,7 +288,7 @@ class CAR(tk.Frame):
 			print(DatePicked)
 			days=variable.get()
 			print(days)
-			print(CarChoice)
+			print(self.CarChoice)
 
 
 		button1=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(VehicleType))
