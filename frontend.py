@@ -7,9 +7,16 @@ from datetime import date
 from backend import *
 
 
-
 LARGE_FONT=("Verdana", 12)
 SMALL_FONT=("Verdana", 9)
+
+class common_variable():
+	cur_customer=None
+	cur_customerID=None
+	cur_vehicle=None
+	cur_date=None
+	cur_duration=None
+	cur_price=None
 
 class TSE(tk.Tk):
 	def __init__(self, *args, **kwargs):
@@ -139,7 +146,7 @@ class Adding_emp(Frame):
 		self.edob.delete("1.0","end")
 		self.eemail_id.delete("1.0","end")
 		self.Password.delete("1.0","end")
-			# insert code to insert values into customer table
+			# insert code to insert values into employee table
 		
 		employee_insertion(self.emp_id, self.emp_name, self.emp_dob, self.emp_emailID, self.emp_password)
 
@@ -179,11 +186,14 @@ class Employee_login(Frame):
 		self.emp_id.delete("1.0","end")
 		self.password.delete("1.0","end")
 			
-		retrieve_login(self.e_id, self.pas)
-			
+		auth=retrieve_login(self.e_id, self.pas)
+		
+		if auth == 1:
+			self.controller.show_frame(Customer_details)
+		elif auth == 0:
+			self.controller.show_frame(Employee_login)
 
 
-		self.controller.show_frame(Customer_details)
 	def __init__(self, parent, controller):
 		Frame.__init__(self,parent)
 		self.controller=controller
@@ -247,103 +257,118 @@ class Customer_details(tk.Frame):
 
 	def enter(self):
 		
-			
+		self.cID=self.c_ID.get("1.0","end-1c")	
 		self.cname=self.c_name.get("1.0","end-1c")
 		self.cphno=self.c_phno.get("1.0","end-1c")
 		self.ceid=self.c_eid.get("1.0","end-1c")
 		self.caddr=self.c_addr.get("1.0","end-1c")
 
+		self.c_ID.delete("1.0","end")
 		self.c_name.delete("1.0","end")
 		self.c_phno.delete("1.0","end")
 		self.c_eid.delete("1.0","end")
 		self.c_addr.delete("1.0","end")
-
 		
-
+		adding_customer(self.cID, self.cname, self.cphno, self.ceid, self.caddr)
 		self.controller.show_frame(VehicleType)
 	
 
 
 	
 
-class VehicleType(tk.Frame):
+class VehicleType(Frame):
 	
 	def __init__(self, parent, controller):
-		tk.Frame.__init__(self,parent)
+		Frame.__init__(self,parent)
+		self.controller=controller
+		
+
 
 		label=tk.Label(self, text="VEHICLE TYPE", font=LARGE_FONT)
 
 		button1=tk.Button(self, text="CAR", command=lambda: controller.show_frame(CAR), height=5, width=15)
-		button2=tk.Button(self, text="Bike", command=lambda: controller.show_frame(BIKE), height=5, width=15)
+		button2=tk.Button(self, text="BIKE", command=lambda: controller.show_frame(BIKE), height=5, width=15)
 		button3=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(Customer_details))
 
 		label.grid(row=0, column=2, sticky='w')
 		button1.grid(row=1, column=0, sticky='e')
 		button2.grid(row=1, column=3, sticky='e')
-		button3.grid(row=2, column=0, sticky='w') 
+		button3.grid(row=2, column=0, sticky='w')
+
+		# Insert two tables showing prices for each vehicle type and each vehicle
 
 class CAR(tk.Frame):
 	def __init__(self, parent, controller):
-		tk.Frame.__init__(self, parent)
-		choice="CAR"
+		Frame.__init__(self, parent)
+		self.choice="CAR"
+		self.CID=Label(self, text="ENTER CURRENT CUSTOMER ID:", font=SMALL_FONT)
+		self.current_id=Text(self, height=2, width=30)
+		self.label=tk.Label(self, text="CAR DETAILS", font=LARGE_FONT)
+		self.label.grid(row=0,column=1,sticky='w')
+		self.CID.grid(row=1, column=0, sticky='w')
+		self.current_id.grid(row=1, column=1, sticky='w')
 
-		label=tk.Label(self, text="CAR DETAILS", font=LARGE_FONT)
-		label.grid(row=0,column=1,sticky='w')
-
-		DatePicked=datetime.date(1984, 6, 24)
+		self.DatePicked=datetime.date(1984, 6, 24)
 		#adding radio buttons for choosing car
-		cars=[ ("SWIFT", 1), ("POLO", 2), ("XUV",3), ("FORTUNER", 4)]
-		label1=tk.Label(self, text="Choose Car: ", font=SMALL_FONT)
-		label1.grid(row=1,column=0, sticky=W)
+		self.cars=[ ("SWIFT", 1), ("POLO", 2), ("XUV",3), ("FORTUNER", 4)]
+		self.label1=tk.Label(self, text="Choose Car: ", font=SMALL_FONT)
+		self.label1.grid(row=2,column=0, sticky=W)
 
 		
-		var=IntVar()
+		self.var=StringVar()
 		self.CarChoice=None
 		c_val=1
 		
-		for val, car in enumerate(cars):
-			tk.Radiobutton(self, text=car, padx=20,variable=var, command=self.asign, value=val).grid(row=1, column=c_val, sticky='w')
+		for self.u, car in enumerate(self.cars):
+			tk.Radiobutton(self, text=car, padx=20,variable=self.var, value=self.u, command=self.asign).grid(row=2, column=c_val, sticky='w')
 			c_val=c_val+1
 	
 
 
 
 		#Adding calender to select date
-		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=2, column=0,sticky='w')
-		ttk.Button(self, text='Calendar', command=lambda: self.opencal("Calendar")).grid(row=2,column=2, sticky='w')
+		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=3, column=0,sticky='w')
+		ttk.Button(self, text='Calendar', command=lambda: self.opencal("Calendar")).grid(row=3,column=2, sticky='w')
 
 		#adding dropdown box for plan selection
-		label2=ttk.Label(self, text="Choose plan", font=SMALL_FONT)
-		label2.grid(row=3,column=0,sticky='w')
+		self.label2=ttk.Label(self, text="Choose plan", font=SMALL_FONT)
+		self.label2.grid(row=4,column=0,sticky='w')
 
-		options=["5 Days", "10 Days", "20 Days"] 	#write code to get from database?
+		options=["1 Day","5 Days", "10 Days","15 Days", "30 Days"] 	
 
-		variable=StringVar(self)
-		variable.set(options[0])
+		self.variable=StringVar(self)
+		self.variable.set(options[0])
 
-		w=OptionMenu(self,variable, *options)
-		w.grid(row=3,column=2,sticky='w')
+		self.w=OptionMenu(self,self.variable, *options)
+		self.w.grid(row=4,column=2,sticky='w')
 
 		#Adding the back and next button
-		
+		self.button1=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(VehicleType))
+		self.button2=ttk.Button(self, text="NEXT", command=self.adding) 
 
-
-		button1=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(VehicleType))
-		button2=ttk.Button(self, text="NEXT", command=self.adding) #add function to insert values into the table before going to next page
-
-		button1.grid(row=4, column=0, sticky='w')
-		button2.grid(row=4, column=1, sticky='w')
+		self.button1.grid(row=5, column=0, sticky='w')
+		self.button2.grid(row=5, column=1, sticky='w')
 
 	def adding(self):
-			print(DatePicked)
-			days=variable.get()
-			print(days)
-			print(self.CarChoice)
+		self.C_ID=self.CID     #remove the LHS. not needed
+		print(self.DatePicked)
+		self.days=self.variable.get()  # This stores the duration for which the vehicle is rented
+		if self.days=="1 Day":
+			self.days="one_day"
+		elif self.days=="5 Days":
+			self.days="five_days"
+		elif self.days=="10 Days":
+			self.days="ten_days"
+		elif self.days=="15 Days":
+			self.days="fifteen_days"
+		elif self.days=="30 Days":
+			self.days="thirty_days"
+
+		
+		print(self.CarChoice)
 
 	def print_sel(self):
-		DatePicked=(self.cal.selection_get()).strftime('%m/%d/%Y')
-		print(DatePicked)
-		
+		self.DatePicked=(self.cal.selection_get()).strftime('%m/%d/%Y')
 		self.popup.destroy()
 
 	def opencal(self,msg):
@@ -356,8 +381,6 @@ class CAR(tk.Frame):
 						cursor='hand1', year=2018, month=2, day=5)
 		self.bu=ttk.Button(self.popup, text="OK", command=self.print_sel)
 
-		print(self.cal)
-
 		self.cal.grid(row=1,column=0, sticky='w')
 		self.bu.grid(row=2, column=0, sticky='w')
 
@@ -366,7 +389,7 @@ class CAR(tk.Frame):
 
 		
 	def asign(self):
-		self.CarChoice=var.get()
+		self.CarChoice=self.var.get()
 
 
 	
