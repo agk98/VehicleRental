@@ -89,6 +89,7 @@ class Second_page(Frame):															# Add to frames list
 		Frame.__init__(self, parent)
 		self.controller=controller
 
+		employee=get_employee()
 		label=Label(self, text="ADMIN OPERATIONS", font=LARGE_FONT)
 		add_employee=Button(self, text="ADD EMPLOYEE", command=lambda: self.controller.show_frame(Adding_emp))
 		del_employee=Button(self, text="REMOVE EMPLOYEE", command=lambda: self.controller.show_frame(removing_emp))
@@ -96,6 +97,32 @@ class Second_page(Frame):															# Add to frames list
 		label.grid(row=0, column=1, sticky='w')
 		add_employee.grid(row=1, column=0, sticky='w')
 		del_employee.grid(row=2, column=0, sticky='w')
+
+		# Treeview to show the present customers in the database
+
+		tree=Treeview(self)
+
+		tree["columns"]=("#1", "#2","#3","#4","#5")
+		tree.heading("#1",text="emp_id")
+		tree.heading("#2",text="emp_name")
+		tree.heading("#3",text="emp_dob")
+		tree.heading("#4",text="emp_eid")
+		tree.heading("#5",text="emp_pass")
+
+		tree.column("#1", stretch=YES)
+		tree.column("#2", stretch=YES)
+		tree.column("#3", stretch=YES)
+		tree.column("#4", stretch=YES)
+		tree.column("#5", stretch=YES)
+
+		tree.grid(row=10, column=5, padx=10, pady=10, columnspan=4, sticky='nsew')
+		tree['show']='headings'
+
+		employee=get_employee()
+
+		for i in employee:
+			tree.insert("",'end', values=i)
+
 
 class Adding_emp(Frame):
 	
@@ -286,20 +313,73 @@ class VehicleType(Frame):
 
 		label=tk.Label(self, text="VEHICLE TYPE", font=LARGE_FONT)
 
-		button1=tk.Button(self, text="CAR", command=lambda: controller.show_frame(CAR), height=5, width=15)
-		button2=tk.Button(self, text="BIKE", command=lambda: controller.show_frame(BIKE), height=5, width=15)
+		button1=tk.Button(self, text="CAR", command=lambda: controller.show_frame(CAR), height=3, width=8)
+		button2=tk.Button(self, text="BIKE", command=lambda: controller.show_frame(BIKE), height=3, width=8)
 		button3=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(Customer_details))
 
-		label.grid(row=0, column=2, sticky='w')
-		button1.grid(row=1, column=0, sticky='e')
-		button2.grid(row=1, column=3, sticky='e')
-		button3.grid(row=2, column=0, sticky='w')
+		label.grid(row=0, column=1, sticky='w')
+		button1.grid(row=3, column=0, sticky='e')
+		button2.grid(row=3, column=3, sticky='e')
+		button3.grid(row=4, column=0, sticky='w')
 
-		# Insert two tables showing prices for each vehicle type and each vehicle
+		# tree view for car
+
+		car_tree=Treeview(self)
+
+		car_tree["columns"]=("#1", "#2","#3","#4","#5", "#6", "#7")
+		car_tree.heading("#1",text="CAR MAKE")
+		car_tree.heading("#2",text="CAR MODEL")
+		car_tree.heading("#3",text="1 Day")
+		car_tree.heading("#4",text="5 Days")
+		car_tree.heading("#5",text="10 Days")
+		car_tree.heading("#6",text="15 Days")
+		car_tree.heading("#7",text="30 Days")
+
+		car_tree.column("#1")
+		car_tree.column("#2")
+		car_tree.column("#3")
+		car_tree.column("#4")
+		car_tree.column("#5")
+		car_tree.column("#6")
+		car_tree.column("#7")
+
+		car_tree.grid(row=1, column=0, padx=10, pady=10, columnspan=4, sticky='nsew')
+		car_tree['show']='headings'
+
+		headings=get_car_prices()
+
+		for i in headings:
+			car_tree.insert("",'end', values=i)
+
+
+		# tree view for bikes
+		bike_tree=Treeview(self)
+
+		bike_tree["columns"]=("#1", "#2","#3","#4","#5", "#6", "#7")
+		bike_tree.heading("#1",text="BIKE MAKE")
+		bike_tree.heading("#2",text="BIKE MODEL")
+		bike_tree.heading("#3",text="1 Day")
+		bike_tree.heading("#4",text="5 Days")
+		bike_tree.heading("#5",text="10 Days")
+
+		bike_tree.column("#1", stretch=YES)
+		bike_tree.column("#2", stretch=YES)
+		bike_tree.column("#3", stretch=YES)
+		bike_tree.column("#4", stretch=YES)
+		bike_tree.column("#5", stretch=YES)
+
+		bike_tree.grid(row=2, column=0, padx=10, pady=10, columnspan=4, sticky='nsew')
+		bike_tree['show']='headings'
+
+		headingss=get_bike_prices()
+
+		for i in headingss:
+			bike_tree.insert("",'end', values=i)
 
 class CAR(tk.Frame):
 	def __init__(self, parent, controller):
 		Frame.__init__(self, parent)
+		self.controller=controller
 		self.choice="CAR"
 		self.CID=Label(self, text="ENTER CURRENT CUSTOMER ID:", font=SMALL_FONT)
 		self.current_id=Text(self, height=2, width=30)
@@ -310,29 +390,25 @@ class CAR(tk.Frame):
 
 		self.DatePicked=datetime.date(1984, 6, 24)
 		#adding radio buttons for choosing car
-		self.cars=[ ("SWIFT", 1), ("POLO", 2), ("XUV",3), ("FORTUNER", 4)]
+		self.cars=[("Swift",0), ("Polo",1), ("XUV",2), ("Fortuner",3)]
 		self.label1=tk.Label(self, text="Choose Car: ", font=SMALL_FONT)
 		self.label1.grid(row=2,column=0, sticky=W)
 
 		
 		self.var=StringVar()
-		self.CarChoice=None
-		c_val=1
+		self.r1=Radiobutton(self, text="SWIFT", variable=self.var, value="Swift", command=self.asign).grid(row=2, column=1, sticky='w')
+		self.r2=Radiobutton(self, text="POLO", variable=self.var, value="Polo", command=self.asign).grid(row=3, column=1, sticky='w')
+		self.r3=Radiobutton(self, text="XUV", variable=self.var, value="XUV", command=self.asign).grid(row=4, column=1, sticky='w')
+		self.r4=Radiobutton(self, text="FORTUNER", variable=self.var, value="Fortuner", command=self.asign).grid(row=5, column=1, sticky='w')
+
 		
-		for self.u, car in enumerate(self.cars):
-			tk.Radiobutton(self, text=car, padx=20,variable=self.var, value=self.u, command=self.asign).grid(row=2, column=c_val, sticky='w')
-			c_val=c_val+1
-	
-
-
-
 		#Adding calender to select date
-		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=3, column=0,sticky='w')
-		ttk.Button(self, text='Calendar', command=lambda: self.opencal("Calendar")).grid(row=3,column=2, sticky='w')
+		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=6, column=0,sticky='w')
+		ttk.Button(self, text='Calendar', command=lambda: self.opencal("Calendar")).grid(row=6,column=1, sticky='w')
 
 		#adding dropdown box for plan selection
 		self.label2=ttk.Label(self, text="Choose plan", font=SMALL_FONT)
-		self.label2.grid(row=4,column=0,sticky='w')
+		self.label2.grid(row=7,column=0,sticky='w')
 
 		options=["1 Day","5 Days", "10 Days","15 Days", "30 Days"] 	
 
@@ -340,14 +416,14 @@ class CAR(tk.Frame):
 		self.variable.set(options[0])
 
 		self.w=OptionMenu(self,self.variable, *options)
-		self.w.grid(row=4,column=2,sticky='w')
+		self.w.grid(row=7,column=1,sticky='w')
 
 		#Adding the back and next button
 		self.button1=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(VehicleType))
 		self.button2=ttk.Button(self, text="NEXT", command=self.adding) 
 
-		self.button1.grid(row=5, column=0, sticky='w')
-		self.button2.grid(row=5, column=1, sticky='w')
+		self.button1.grid(row=8, column=0, sticky='w')
+		self.button2.grid(row=8, column=1, sticky='w')
 
 	def adding(self):
 		self.C_ID=self.CID     #remove the LHS. not needed
@@ -363,9 +439,8 @@ class CAR(tk.Frame):
 			self.days="fifteen_days"
 		elif self.days=="30 Days":
 			self.days="thirty_days"
-
-		
-		print(self.CarChoice)
+		self.car_price=calculating_car_price(self.days, self.CarChoice, 0)
+		print(self.car_price)
 
 	def print_sel(self):
 		self.DatePicked=(self.cal.selection_get()).strftime('%m/%d/%Y')
@@ -390,6 +465,7 @@ class CAR(tk.Frame):
 		
 	def asign(self):
 		self.CarChoice=self.var.get()
+		
 
 
 	
@@ -411,64 +487,91 @@ class BIKE(tk.Frame):
 	
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
-		choice="BIKE"
+		self.controller=controller
+		self.choice="BIKE"
+		self.CID=Label(self, text="ENTER CURRENT CUSTOMER ID:", font=SMALL_FONT)
+		self.current_id=Text(self, height=2, width=30)
+		self.label=tk.Label(self, text="BIKE DETAILS", font=LARGE_FONT)
+		self.label.grid(row=0,column=1,sticky='w')
+		self.CID.grid(row=1, column=0, sticky='w')
+		self.current_id.grid(row=1, column=1, sticky='w')
 
-		label=tk.Label(self, text="BIKE DETAILS", font=LARGE_FONT)
-		label.grid(row=0,column=1,sticky='w')
-
-		bikes=[ ("SWIFT", 1), ("POLO", 2), ("XUV",3), ("FORTUNER", 4)]
-		label1=tk.Label(self, text="Choose Bike: ", font=SMALL_FONT)
-		label1.grid(row=1,column=0, sticky=W)
-
-		var=IntVar()
-		c_val=1
-		for val, bike in enumerate(bikes):
-			tk.Radiobutton(self, text=bike, padx=20,variable=var, value=val).grid(row=1, column=c_val, sticky='w')
-			c_val=c_val+1
-
-		def opencal(msg):
-			popup=tk.Toplevel()
-
-			def print_sel():
-				print(cal.selection_get())
-				popup.destroy()
-			popup.wm_title("calender")
-			la=ttk.Label(popup, text=msg, font=LARGE_FONT)
-			la.grid(row=0,column=0, sticky='w')
-
-			cal=Calendar(popup, font="Arial 14", selectmode='day',
-						cursor='hand1', year=2018, month=2, day=5)
-			bu=ttk.Button(popup, text="OK", command=print_sel)
-
-			cal.grid(row=1,column=0, sticky='w')
-			bu.grid(row=2, column=0, sticky='w')
-			popup.mainloop()
-
-		#Adding calender to select date
-		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=2, column=0,sticky='w')
-		ttk.Button(self, text='Calendar', command=lambda: opencal("Calendar")).grid(row=2,column=2, sticky='w')
-
-		#addting dropdown box for plan selection
-		label2=ttk.Label(self, text="Choose plan", font=SMALL_FONT)
-		label2.grid(row=3,column=0,sticky='w')
-
-		options=["5 Days", "10 Days", "20 Days"] #write code to get from database?
-
-		variable=StringVar(self)
-		variable.set(options[0])
-
-		w=OptionMenu(self,variable, *options)
-		w.grid(row=3,column=2,sticky='w')
-
-		#Adding the back and next button
-
-		button1=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(VehicleType))
-		button2=ttk.Button(self, text="NEXT", command=lambda: controller.show_frame(confirm)) #add function to insert values into the table before going to next page
-
-		button1.grid(row=4, column=0, sticky='w')
-		button2.grid(row=4, column=1, sticky='w')
+		self.DatePicked=datetime.date(1984, 6, 24)
+		#adding radio buttons for choosing car
+		self.bikes=[("Pulsar",0), ("Splendor",1), ("X-Blade",2), ("FZ-S",3)]
+		self.label1=tk.Label(self, text="Choose Bike: ", font=SMALL_FONT)
+		self.label1.grid(row=2,column=0, sticky=W)
 
 		
+		self.var=StringVar()
+		self.r1=Radiobutton(self, text="PULSAR", variable=self.var, value="Pulsar", command=self.asign).grid(row=2, column=1, sticky='w')
+		self.r2=Radiobutton(self, text="SPLENDOR", variable=self.var, value="Splendor", command=self.asign).grid(row=3, column=1, sticky='w')
+		self.r3=Radiobutton(self, text="X-BLADE", variable=self.var, value="X-Blade", command=self.asign).grid(row=4, column=1, sticky='w')
+		self.r4=Radiobutton(self, text="FZ-S", variable=self.var, value="FZ-S", command=self.asign).grid(row=5, column=1, sticky='w')
+
+		
+		#Adding calender to select date
+		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=6, column=0,sticky='w')
+		ttk.Button(self, text='Calendar', command=lambda: self.opencal("Calendar")).grid(row=6,column=1, sticky='w')
+
+		#adding dropdown box for plan selection
+		self.label2=ttk.Label(self, text="Choose plan", font=SMALL_FONT)
+		self.label2.grid(row=7,column=0,sticky='w')
+
+		options=["1 Day","5 Days", "10 Days"] 	
+
+		self.variable=StringVar(self)
+		self.variable.set(options[0])
+
+		self.w=OptionMenu(self,self.variable, *options)
+		self.w.grid(row=7,column=1,sticky='w')
+
+		#Adding the back and next button
+		self.button1=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(VehicleType))
+		self.button2=ttk.Button(self, text="NEXT", command=self.adding) 
+
+		self.button1.grid(row=8, column=0, sticky='w')
+		self.button2.grid(row=8, column=1, sticky='w')
+
+	def adding(self):
+		self.C_ID=self.CID     #remove the LHS. not needed
+		print(self.DatePicked)
+		self.days=self.variable.get()  # This stores the duration for which the vehicle is rented
+		if self.days=="1 Day":
+			self.days="one_day"
+		elif self.days=="5 Days":
+			self.days="five_days"
+		elif self.days=="10 Days":
+			self.days="ten_days"
+		self.Bike_price=calculating_bike_price(self.days, self.BikeChoice, 0)
+		print(self.Bike_price)
+
+	def print_sel(self):
+		self.DatePicked=(self.cal.selection_get()).strftime('%m/%d/%Y')
+		self.popup.destroy()
+
+	def opencal(self,msg):
+		self.popup=tk.Toplevel()
+		
+		self.msg=self.popup.wm_title("calender")
+		self.la=ttk.Label(self.popup, text=msg, font=LARGE_FONT)
+		self.la.grid(row=0,column=0, sticky='w')
+		self.cal=Calendar(self.popup, font="Arial 14", selectmode='day',
+						cursor='hand1', year=2018, month=2, day=5)
+		self.bu=ttk.Button(self.popup, text="OK", command=self.print_sel)
+
+		self.cal.grid(row=1,column=0, sticky='w')
+		self.bu.grid(row=2, column=0, sticky='w')
+
+		self.popup.mainloop()
+
+
+		
+	def asign(self):
+		self.BikeChoice=self.var.get()
+		
+
+	
 
 
 app=TSE()
