@@ -5,6 +5,7 @@ from tkinter import *
 from tkcalendar import Calendar
 from datetime import date
 from backend import *
+from fullscreen import *
 
 
 LARGE_FONT=("Verdana", 12)
@@ -31,7 +32,7 @@ class TSE(tk.Tk):
 
 		self.frames={}							
 
-		for F in (Home, Admin_Login, Second_page, Adding_emp, removing_emp, Employee_login, Customer_details, VehicleType, CAR, BIKE): 
+		for F in (Home, Admin_Login, Second_page, Adding_emp, removing_emp, Employee_login, Customer_details, VehicleType, CAR, BIKE, BILL): 
 
 			frame=F(container, self)		
 
@@ -98,31 +99,6 @@ class Second_page(Frame):															# Add to frames list
 		add_employee.grid(row=1, column=0, sticky='w')
 		del_employee.grid(row=2, column=0, sticky='w')
 
-		# Treeview to show the present customers in the database
-
-		tree=Treeview(self)
-
-		tree["columns"]=("#1", "#2","#3","#4","#5")
-		tree.heading("#1",text="emp_id")
-		tree.heading("#2",text="emp_name")
-		tree.heading("#3",text="emp_dob")
-		tree.heading("#4",text="emp_eid")
-		tree.heading("#5",text="emp_pass")
-
-		tree.column("#1", stretch=YES)
-		tree.column("#2", stretch=YES)
-		tree.column("#3", stretch=YES)
-		tree.column("#4", stretch=YES)
-		tree.column("#5", stretch=YES)
-
-		tree.grid(row=10, column=5, padx=10, pady=10, columnspan=4, sticky='nsew')
-		tree['show']='headings'
-
-		employee=get_employee()
-
-		for i in employee:
-			tree.insert("",'end', values=i)
-
 
 class Adding_emp(Frame):
 	
@@ -133,7 +109,7 @@ class Adding_emp(Frame):
 		self.Top=Label(self, text="ENTER EMPLOYEE DETAILS", font=LARGE_FONT)
 		self.Id=Label(self, text="Employee ID:", font=SMALL_FONT)
 		self.name=Label(self, text="Name:", font=SMALL_FONT)
-		self.date_of_birth=Label(self, text="Date Of Birth:", font=SMALL_FONT)
+		self.date_of_birth=Label(self, text="AGE:", font=SMALL_FONT)
 		self.email_id=Label(self, text="Email ID:", font=SMALL_FONT)
 		self.password=Label(self, text="Password:", font=SMALL_FONT)
 
@@ -168,12 +144,15 @@ class Adding_emp(Frame):
 		self.emp_emailID=self.eemail_id.get("1.0","end-1c")
 		self.emp_password=self.Password.get("1.0","end-1c")
 
+
+
 		self.EID.delete("1.0","end")
 		self.ename.delete("1.0","end")
 		self.edob.delete("1.0","end")
 		self.eemail_id.delete("1.0","end")
 		self.Password.delete("1.0","end")
 			# insert code to insert values into employee table
+
 		
 		employee_insertion(self.emp_id, self.emp_name, self.emp_dob, self.emp_emailID, self.emp_password)
 
@@ -194,6 +173,30 @@ class removing_emp(Frame):
 		self.label.grid(row=1, column=0, sticky='w')
 		self.textbox.grid(row=1, column=1, sticky='w')
 		self.remove.grid(row=2, column=2, sticky='w')
+
+		self.tree=Treeview(self)
+
+		self.tree["columns"]=("#1", "#2","#3","#4","#5")
+		self.tree.heading("#1",text="emp_id")
+		self.tree.heading("#2",text="emp_name")
+		self.tree.heading("#3",text="emp_eid")
+		self.tree.heading("#4",text="emp_pass")
+		self.tree.heading("#5",text="emp_age")
+
+		self.tree.column("#1", stretch=YES)
+		self.tree.column("#2", stretch=YES)
+		self.tree.column("#3", stretch=YES)
+		self.tree.column("#4", stretch=YES)
+		self.tree.column("#5", stretch=YES)
+
+		self.tree.grid(row=3, column=0, padx=10, pady=10, columnspan=4, sticky='nsew')
+		self.tree['show']='headings'
+
+		self.employee=get_employee()
+
+		for i in self.employee:
+			self.tree.insert("",'end', values=i)
+
 
 	def rem(self):
 
@@ -380,35 +383,40 @@ class CAR(tk.Frame):
 	def __init__(self, parent, controller):
 		Frame.__init__(self, parent)
 		self.controller=controller
-		self.choice="CAR"
-		self.CID=Label(self, text="ENTER CURRENT CUSTOMER ID:", font=SMALL_FONT)
-		self.current_id=Text(self, height=2, width=30)
 		self.label=tk.Label(self, text="CAR DETAILS", font=LARGE_FONT)
+		self.CID=Label(self, text="ENTER CURRENT CUSTOMER ID:", font=SMALL_FONT)
+		self.transID=Label(self, text="ENTER TRANSACTION ID:", font=SMALL_FONT)
+		self.current_id=Text(self, height=2, width=30)
+		self.current_trans=Text(self, height=2, width=30)
+		
+
 		self.label.grid(row=0,column=1,sticky='w')
 		self.CID.grid(row=1, column=0, sticky='w')
 		self.current_id.grid(row=1, column=1, sticky='w')
+		self.transID.grid(row=2, column=0, sticky='w')
+		self.current_trans.grid(row=2, column=1, sticky='w')
 
 		self.DatePicked=datetime.date(1984, 6, 24)
 		#adding radio buttons for choosing car
 		self.cars=[("Swift",0), ("Polo",1), ("XUV",2), ("Fortuner",3)]
 		self.label1=tk.Label(self, text="Choose Car: ", font=SMALL_FONT)
-		self.label1.grid(row=2,column=0, sticky=W)
+		self.label1.grid(row=3,column=0, sticky=W)
 
 		
 		self.var=StringVar()
-		self.r1=Radiobutton(self, text="SWIFT", variable=self.var, value="Swift", command=self.asign).grid(row=2, column=1, sticky='w')
-		self.r2=Radiobutton(self, text="POLO", variable=self.var, value="Polo", command=self.asign).grid(row=3, column=1, sticky='w')
-		self.r3=Radiobutton(self, text="XUV", variable=self.var, value="XUV", command=self.asign).grid(row=4, column=1, sticky='w')
-		self.r4=Radiobutton(self, text="FORTUNER", variable=self.var, value="Fortuner", command=self.asign).grid(row=5, column=1, sticky='w')
+		self.r1=Radiobutton(self, text="SWIFT", variable=self.var, value="Swift", command=self.asign).grid(row=3, column=1, sticky='w')
+		self.r2=Radiobutton(self, text="POLO", variable=self.var, value="Polo", command=self.asign).grid(row=4, column=1, sticky='w')
+		self.r3=Radiobutton(self, text="XUV", variable=self.var, value="XUV", command=self.asign).grid(row=5, column=1, sticky='w')
+		self.r4=Radiobutton(self, text="FORTUNER", variable=self.var, value="Fortuner", command=self.asign).grid(row=6, column=1, sticky='w')
 
 		
 		#Adding calender to select date
-		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=6, column=0,sticky='w')
-		ttk.Button(self, text='Calendar', command=lambda: self.opencal("Calendar")).grid(row=6,column=1, sticky='w')
+		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=7, column=0,sticky='w')
+		ttk.Button(self, text='Calendar', command=lambda: self.opencal("Calendar")).grid(row=7,column=1, sticky='w')
 
 		#adding dropdown box for plan selection
 		self.label2=ttk.Label(self, text="Choose plan", font=SMALL_FONT)
-		self.label2.grid(row=7,column=0,sticky='w')
+		self.label2.grid(row=8,column=0,sticky='w')
 
 		options=["1 Day","5 Days", "10 Days","15 Days", "30 Days"] 	
 
@@ -416,31 +424,16 @@ class CAR(tk.Frame):
 		self.variable.set(options[0])
 
 		self.w=OptionMenu(self,self.variable, *options)
-		self.w.grid(row=7,column=1,sticky='w')
+		self.w.grid(row=8,column=1,sticky='w')
 
 		#Adding the back and next button
 		self.button1=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(VehicleType))
 		self.button2=ttk.Button(self, text="NEXT", command=self.adding) 
+		self.button3=ttk.Button(self, text="BILL", command=lambda: controller.show_frame(BILL))
 
-		self.button1.grid(row=8, column=0, sticky='w')
-		self.button2.grid(row=8, column=1, sticky='w')
-
-	def adding(self):
-		self.C_ID=self.CID     #remove the LHS. not needed
-		print(self.DatePicked)
-		self.days=self.variable.get()  # This stores the duration for which the vehicle is rented
-		if self.days=="1 Day":
-			self.days="one_day"
-		elif self.days=="5 Days":
-			self.days="five_days"
-		elif self.days=="10 Days":
-			self.days="ten_days"
-		elif self.days=="15 Days":
-			self.days="fifteen_days"
-		elif self.days=="30 Days":
-			self.days="thirty_days"
-		self.car_price=calculating_car_price(self.days, self.CarChoice, 0)
-		print(self.car_price)
+		self.button1.grid(row=9, column=0, sticky='w')
+		self.button2.grid(row=9, column=1, sticky='w')
+		self.button3.grid(row=9, column=2, sticky='w')
 
 	def print_sel(self):
 		self.DatePicked=(self.cal.selection_get()).strftime('%m/%d/%Y')
@@ -465,21 +458,26 @@ class CAR(tk.Frame):
 		
 	def asign(self):
 		self.CarChoice=self.var.get()
-		
 
+	def adding(self):
+		self.CID=self.current_id.get("1.0","end-1c")
+		self.tid=self.current_trans.get("1.0","end-1c")
 
-	
-	
-	
-
-class Car1(Frame):
-	def __init__(self, parent, controller):
-		Frame.__init__(self, parent)
-		list_of_prices=Label(self, text="PRICE OF CARS", font=LARGE_FONT)
-		list_of_prices.grid(row=0, column=1, sticky='w')
-
-		# Use this frame to display the prices of each car in a treeview
-
+		self.days=self.variable.get()  # This stores the duration for which the vehicle is rented
+		if self.days=="1 Day":
+			self.day="one_day"
+		elif self.days=="5 Days":
+			self.day="five_days"
+		elif self.days=="10 Days":
+			self.day="ten_days"
+		elif self.days=="15 Days":
+			self.day="fifteen_days"
+		elif self.days=="30 Days":
+			self.day="thirty_days"
+		self.car_price=calculating_car_price(self.day, self.CarChoice, 0)
+		self.bike_model="-"
+		self.customer_name=get_customer_name(self.CID,"")	
+		inserting_trsaction(self.CID, self.customer_name, self.tid, self.CarChoice, self.bike_model, self.DatePicked, self.days, self.car_price)
 
 
 class BIKE(tk.Frame):
@@ -534,17 +532,21 @@ class BIKE(tk.Frame):
 		self.button2.grid(row=8, column=1, sticky='w')
 
 	def adding(self):
-		self.C_ID=self.CID     #remove the LHS. not needed
-		print(self.DatePicked)
+
+		self.CID=self.current_id.get("1.0","end-1c")
+		self.tid=self.current_trans.get("1.0","end-1c")
+
 		self.days=self.variable.get()  # This stores the duration for which the vehicle is rented
 		if self.days=="1 Day":
-			self.days="one_day"
+			self.day="one_day"
 		elif self.days=="5 Days":
-			self.days="five_days"
+			self.day="five_days"
 		elif self.days=="10 Days":
-			self.days="ten_days"
-		self.Bike_price=calculating_bike_price(self.days, self.BikeChoice, 0)
-		print(self.Bike_price)
+			self.day="ten_days"
+		self.car_price=calculating_bike_price(self.day, self.BikeChoice, 0)
+		self.CarChoice="-"
+		self.customer_name=get_customer_name(self.CID,"")	
+		inserting_trsaction(self.CID, self.customer_name, self.tid, self.CarChoice, self.BikeChoice, self.DatePicked, self.days, self.car_price)
 
 	def print_sel(self):
 		self.DatePicked=(self.cal.selection_get()).strftime('%m/%d/%Y')
@@ -570,9 +572,38 @@ class BIKE(tk.Frame):
 	def asign(self):
 		self.BikeChoice=self.var.get()
 		
+class BILL(Frame):
+	def __init__(self, parent, controller):
+		Frame.__init__(self, parent)
+		self.controller= controller
+
+		bike_tree=Treeview(self)
+
+		bike_tree["columns"]=("#1", "#2","#3","#4","#5")
+		bike_tree.heading("#1",text="Customer ID")
+		bike_tree.heading("#2",text="Customer name")
+		bike_tree.heading("#3",text="car_model")
+		bike_tree.heading("#4",text="bike_model")
+		bike_tree.heading("#5",text="amount")
+
+
+		bike_tree.column("#1", stretch=YES)
+		bike_tree.column("#2", stretch=YES)
+		bike_tree.column("#3", stretch=YES)
+		bike_tree.column("#4", stretch=YES)
+		bike_tree.column("#5", stretch=YES)
+
+		bike_tree.grid(row=2, column=0, padx=10, pady=10, columnspan=4, sticky='nsew')
+		bike_tree['show']='headings'
+
+		headingss=get_bill()
+
+		for i in headingss:
+			bike_tree.insert("",'end', values=i)
 
 	
 
 
 app=TSE()
+root=FullScreenApp(app)
 app.mainloop()

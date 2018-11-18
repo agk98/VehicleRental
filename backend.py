@@ -1,4 +1,4 @@
-5
+
 #!/usr/bin/python3
 
 import mysql.connector as my
@@ -7,6 +7,22 @@ import mysql.connector as my
 db = my.connect(host="localhost",user="root",passwd="root",database="vehicle" )
 
 cur=db.cursor()
+
+def inserting_trsaction(cus_ID, customer_name, transaction_id, car_model, bike_model, date, plan, price):
+	sql="INSERT INTO transactions VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
+	values=(transaction_id, cus_ID, customer_name, car_model, bike_model, date, plan, price)
+	cur.execute(sql, values)
+	db.commit()	
+
+def get_customer_name(curID,name):
+	sql="SELECT customer_name FROM customer_details WHERE customer_id=%s"
+	val=(curID,)
+	cur.execute(sql, val)
+	names=cur.fetchall()
+	for x in names:
+		name=x[0]
+	return name
+
 
 def get_car_prices():
 	sql="SELECT * FROM car_price"
@@ -61,7 +77,7 @@ def adding_customer(c_id, c_name, c_phno, c_email, c_addr):
 
 def employee_insertion(emp_id, emp_name, emp_dob, emp_eid, emp_pass):
 	query="INSERT INTO employee_details VALUES(%s, %s, %s, %s, %s);"
-	val=(emp_id, emp_name, emp_dob, emp_eid, emp_pass)
+	val=(emp_id, emp_name, emp_eid, emp_pass, emp_dob)
 
 	cur.execute(query, val)
 	db.commit()
@@ -83,4 +99,11 @@ def retrieve_login(emp_id, emp_pass):
 		return 0
 	else:
 		return 1
-	db.commit()
+	db.commit
+
+def get_bill():
+	cur.callproc('bill')
+
+	for result in cur.stored_results():
+		order=result.fetchall()
+	return order
