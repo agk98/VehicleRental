@@ -11,19 +11,11 @@ from fullscreen import *
 LARGE_FONT=("Verdana", 12)
 SMALL_FONT=("Verdana", 9)
 
-class common_variable():
-	cur_customer=None
-	cur_customerID=None
-	cur_vehicle=None
-	cur_date=None
-	cur_duration=None
-	cur_price=None
-
-class TSE(tk.Tk):
+class TSE(Tk):
 	def __init__(self, *args, **kwargs):
 
 		tk.Tk.__init__(self, *args, **kwargs)
-		container=ttk.Frame(self)				
+		container=Frame(self)				
 
 		container.grid()
 
@@ -53,9 +45,9 @@ class Home(Frame):
 		admin_log=Button(self, text="ADMIN LOGIN", command=lambda: controller.show_frame(Admin_Login))
 		emp_log=Button(self, text="EMPLOYEE LOGIN", command=lambda: controller.show_frame(Employee_login))
 
-		label1.grid(row=0, column=1, sticky='w')
-		admin_log.grid(row=1, column=0, sticky='w')
-		emp_log.grid(row=1, column=1, sticky='w')
+		label1.grid(row=0, column=1, sticky='w', padx=10, pady=10)
+		admin_log.grid(row=1, column=0, sticky='w', padx=20, pady=20)
+		emp_log.grid(row=2, column=0, sticky='w', padx=20, pady=20)
 
 
 
@@ -68,36 +60,42 @@ class Admin_Login(Frame):
 
 		self.label1=Label(self, text="ADMIN LOGIN", font=LARGE_FONT)
 		self.label2=Label(self, text="Admin Password", font=SMALL_FONT)
-		self.entered_pass=Text(self, height=2, width=30)
+		self.entered_pass=Entry(self, width=30, show="*")
 		self.login=Button(self, text="LOGIN", command=self.checking)
 		self.back=Button(self, text="BACK", command=lambda: controller.show_frame(Home))
 
-		self.label1.grid(row=0, column=1, sticky='w')
-		self.label2.grid(row=1, column=0, sticky='w')
-		self.entered_pass.grid(row=1, column=1, sticky='w')
-		self.back.grid(row=2, column=0, sticky='w')
-		self.login.grid(row=2, column=1, sticky='w')
+		self.label1.grid(row=0, column=1, sticky='w',padx=10, pady=10)
+		self.label2.grid(row=1, column=0, sticky='w',padx=20, pady=20)
+		self.entered_pass.grid(row=1, column=1, sticky='w', ipady=3, padx=20, pady=20)
+		self.back.grid(row=2, column=0, sticky='w',padx=20, pady=20)
+		self.login.grid(row=2, column=1, sticky='w',padx=20, pady=20)
 	def checking(self):
 		
-		if self.entered_pass.get("1.0","end-1c")==self.password:
-			self.entered_pass.delete("1.0","end")
+		if self.entered_pass.get()==self.password:
+			self.entered_pass.delete(0,"end")
 			self.controller.show_frame(Second_page)
 		else:
 			app.destroy()
 
-class Second_page(Frame):															# Add to frames list
+class Second_page(Frame):															
 	def __init__(self, parent, controller):
 		Frame.__init__(self, parent)
 		self.controller=controller
 
 		employee=get_employee()
+
+		
 		label=Label(self, text="ADMIN OPERATIONS", font=LARGE_FONT)
 		add_employee=Button(self, text="ADD EMPLOYEE", command=lambda: self.controller.show_frame(Adding_emp))
 		del_employee=Button(self, text="REMOVE EMPLOYEE", command=lambda: self.controller.show_frame(removing_emp))
+		self.bill=Button(self, text="TRANSACTION RECORDS", command=lambda: controller.show_frame(BILL))
+		self.logout=Button(self, text="LOGOUT", command= lambda:controller.show_frame(Home))
 
-		label.grid(row=0, column=1, sticky='w')
-		add_employee.grid(row=1, column=0, sticky='w')
-		del_employee.grid(row=2, column=0, sticky='w')
+		label.grid(row=0, column=1, sticky='w',padx=20, pady=20)
+		add_employee.grid(row=1, column=0, sticky='w',padx=20, pady=20)
+		del_employee.grid(row=2, column=0, sticky='w',padx=20, pady=20)
+		self.bill.grid(row=3, column=0, sticky='w',padx=20, pady=20)
+		self.logout.grid(row=4, column=0, sticky='w',padx=20, pady=20)
 
 
 class Adding_emp(Frame):
@@ -119,23 +117,27 @@ class Adding_emp(Frame):
 		self.eemail_id=Text(self, height=2, width=30)
 		self.Password=Text(self, height=2, width=30)
 
-		self.Top.grid(row=0, column=1, sticky='w')
-		self.Id.grid(row=1, column=0, sticky='w')
-		self.EID.grid(row=1, column=1, sticky='w')
-		self.name.grid(row=2, column=0, sticky='w')
-		self.ename.grid(row=2, column=1, sticky='w')	
-		self.date_of_birth.grid(row=3, column=0, sticky='w')
-		self.edob.grid(row=3, column=1, sticky='w')
-		self.email_id.grid(row=4, column=0, sticky='w')
-		self.eemail_id.grid(row=4, column=1, sticky='w')
-		self.password.grid(row=5, column=0, sticky='w')
-		self.Password.grid(row=5, column=1, sticky='w')
+		self.Top.grid(row=0, column=1, sticky='w',padx=20, pady=20)
+		self.Id.grid(row=1, column=0, sticky='w',padx=20, pady=20)
+		self.EID.grid(row=1, column=1, sticky='w',padx=20, pady=20)
+		self.name.grid(row=2, column=0, sticky='w',padx=20, pady=20)
+		self.ename.grid(row=2, column=1, sticky='w',padx=20, pady=20)
+		self.date_of_birth.grid(row=3, column=0, sticky='w',padx=20, pady=20)
+		self.edob.grid(row=3, column=1, sticky='w',padx=20, pady=20)
+		self.email_id.grid(row=4, column=0, sticky='w',padx=20, pady=20)
+		self.eemail_id.grid(row=4, column=1, sticky='w',padx=20, pady=20)
+		self.password.grid(row=5, column=0, sticky='w',padx=20, pady=20)
+		self.Password.grid(row=5, column=1, sticky='w',padx=20, pady=20)
 
 
-		back=Button(self, text="LOGOUT", command=lambda: controller.show_frame(Home))
+		logout=Button(self, text="LOGOUT", command=lambda: controller.show_frame(Home))
 		Add=Button(self, text="ADD", command=self.add)
-		back.grid(row=6, column=0, sticky='w')
-		Add.grid(row=6, column=1, sticky='w')
+		back=Button(self, text="BACK", command=lambda: controller.show_frame(Second_page))
+
+
+		logout.grid(row=7, column=1, sticky='w',padx=20, pady=20)
+		Add.grid(row=6, column=1, sticky='w',padx=20, pady=20)
+		back.grid(row=6, column=0, sticky='w',padx=20, pady=20)
 
 	def add(self):
 		self.emp_id=self.EID.get("1.0","end-1c")
@@ -156,7 +158,7 @@ class Adding_emp(Frame):
 		
 		employee_insertion(self.emp_id, self.emp_name, self.emp_dob, self.emp_emailID, self.emp_password)
 
-		self.controller.show_frame(Home)
+		self.controller.show_frame(Second_page)
 
 
 class removing_emp(Frame):
@@ -169,33 +171,33 @@ class removing_emp(Frame):
 		self.textbox=Text(self, height=2, width=30)
 		self.remove=Button(self, text="REMOVE", command=self.rem)
 
-		self.header.grid(row=0, column=1, sticky='w')
-		self.label.grid(row=1, column=0, sticky='w')
-		self.textbox.grid(row=1, column=1, sticky='w')
-		self.remove.grid(row=2, column=2, sticky='w')
+		self.header.grid(row=0, column=1, sticky='w',padx=20, pady=20)
+		self.label.grid(row=1, column=0, sticky='w',padx=20, pady=20)
+		self.textbox.grid(row=1, column=1, sticky='w',padx=20, pady=20)
+		self.remove.grid(row=2, column=2, sticky='w',padx=20, pady=20)
 
-		self.tree=Treeview(self)
+		# self.tree=Treeview(self)
 
-		self.tree["columns"]=("#1", "#2","#3","#4","#5")
-		self.tree.heading("#1",text="emp_id")
-		self.tree.heading("#2",text="emp_name")
-		self.tree.heading("#3",text="emp_eid")
-		self.tree.heading("#4",text="emp_pass")
-		self.tree.heading("#5",text="emp_age")
+		# self.tree["columns"]=("#1", "#2","#3","#4","#5")
+		# self.tree.heading("#1",text="emp_id")
+		# self.tree.heading("#2",text="emp_name")
+		# self.tree.heading("#3",text="emp_eid")
+		# self.tree.heading("#4",text="emp_pass")
+		# self.tree.heading("#5",text="emp_age")
 
-		self.tree.column("#1", stretch=YES)
-		self.tree.column("#2", stretch=YES)
-		self.tree.column("#3", stretch=YES)
-		self.tree.column("#4", stretch=YES)
-		self.tree.column("#5", stretch=YES)
+		# self.tree.column("#1", stretch=YES)
+		# self.tree.column("#2", stretch=YES)
+		# self.tree.column("#3", stretch=YES)
+		# self.tree.column("#4", stretch=YES)
+		# self.tree.column("#5", stretch=YES)
 
-		self.tree.grid(row=3, column=0, padx=10, pady=10, columnspan=4, sticky='nsew')
-		self.tree['show']='headings'
+		# self.tree.grid(row=3, column=0, padx=10, pady=10, columnspan=4, sticky='nsew')
+		# self.tree['show']='headings'
 
-		self.employee=get_employee()
+		# self.employee=get_employee()
 
-		for i in self.employee:
-			self.tree.insert("",'end', values=i)
+		# for i in self.employee:
+		# 	self.tree.insert("",'end', values=i)
 
 
 	def rem(self):
@@ -204,17 +206,17 @@ class removing_emp(Frame):
 		self.textbox.delete("1.0","end")
 		removing_employee(self.rem_emp)
 		
-		self.controller.show_frame(Home)
+		self.controller.show_frame(Second_page)
 
 
 
 class Employee_login(Frame):
 	def hello(self):
 		self.e_id=self.emp_id.get("1.0","end-1c")
-		self.pas=self.password.get("1.0","end-1c")
+		self.pas=self.password.get()
 
 		self.emp_id.delete("1.0","end")
-		self.password.delete("1.0","end")
+		self.password.delete(0,"end")
 			
 		auth=retrieve_login(self.e_id, self.pas)
 		
@@ -229,22 +231,24 @@ class Employee_login(Frame):
 		self.controller=controller
 
 		self.label1=tk.Label(self, text="EMPLOYEE LOGIN", font=LARGE_FONT)	
-		self.label1.grid(row=0, column=1,sticky='W')
+		self.label1.grid(row=0, column=1,sticky='W',padx=20, pady=20)
 
 		self.label2=tk.Label(self,text="Employee ID", font=LARGE_FONT)
-		self.label2.grid(row=1,column=0,sticky='w')
+		self.label2.grid(row=1,column=0,sticky='w',padx=20, pady=20)
 		self.label3=tk.Label(self,text="Password", font=LARGE_FONT)
-		self.label3.grid(row=2,column=0,sticky='w')
+		self.label3.grid(row=2,column=0,sticky='w',padx=20, pady=20)
 
 
 		self.emp_id=tk.Text(self, height=2,width=30)
-		self.password=tk.Text(self, height=2, width=30)
+		self.password=tk.Entry(self, width=30, show="*")
 
-		self.emp_id.grid(row=1,column=2,padx=10,pady=10)
-		self.password.grid(row=2,column=2,padx=10,pady=10)
+		self.emp_id.grid(row=1,column=2,padx=20, pady=20)
+		self.password.grid(row=2,column=2, ipady=3,padx=20, pady=20)
 
 		self.button1=tk.Button(self, text="LOGIN", command=self.hello)
-		self.button1.grid(row=4, column=0, sticky='W')
+		self.button1.grid(row=4, column=1, sticky='W',padx=20, pady=20)
+		self.button2=Button(self, text="BACK", command=lambda:controller.show_frame(Home))
+		self.button2.grid(row=4, column=0, sticky='w',padx=20, pady=20)
 
 	
 
@@ -261,12 +265,12 @@ class Customer_details(tk.Frame):
 		label4=tk.Label(self, text="Email ID", font=SMALL_FONT)
 		label5=tk.Label(self, text="Address", font=SMALL_FONT)
 		
-		label1.grid(row=0, column=1, sticky='w')
-		label.grid(row=1, column=0, sticky='w')
-		label2.grid(row=2, column=0, sticky='w')
-		label3.grid(row=3, column=0, sticky='w')
-		label4.grid(row=4, column=0, sticky='w')
-		label5.grid(row=5, column=0, sticky='w')
+		label1.grid(row=0, column=1, sticky='w',padx=20, pady=20)
+		label.grid(row=1, column=0, sticky='w',padx=20, pady=20)
+		label2.grid(row=2, column=0, sticky='w',padx=20, pady=20)
+		label3.grid(row=3, column=0, sticky='w',padx=20, pady=20)
+		label4.grid(row=4, column=0, sticky='w',padx=20, pady=20)
+		label5.grid(row=5, column=0, sticky='w',padx=20, pady=20)
 
 		self.c_name=tk.Text(self, height=2,width=30)
 		self.c_ID=Text(self, height=2, width=30)
@@ -274,13 +278,13 @@ class Customer_details(tk.Frame):
 		self.c_eid=tk.Text(self, height=2,width=30)
 		self.c_addr=tk.Text(self, height=2, width=30)
 
-		self.c_ID.grid(row=1, column=2, padx=10, pady=10)
-		self.c_name.grid(row=2,column=2,padx=10,pady=10)
-		self.c_phno.grid(row=3,column=2,padx=10,pady=10)
-		self.c_eid.grid(row=4,column=2,padx=10,pady=10)
-		self.c_addr.grid(row=5,column=2,padx=10,pady=10)
+		self.c_ID.grid(row=1, column=2,padx=20, pady=20)
+		self.c_name.grid(row=2,column=2,padx=20, pady=20)
+		self.c_phno.grid(row=3,column=2,padx=20, pady=20)
+		self.c_eid.grid(row=4,column=2,padx=20, pady=20)
+		self.c_addr.grid(row=5,column=2,padx=20, pady=20)
 
-		button1=tk.Button(self, text="CANCEL", command=lambda: controller.show_frame(Employee_login))
+		button1=tk.Button(self, text="CANCEL", command=lambda: controller.show_frame(Home))
 		button1.grid(row=7, column=1, sticky='w')
 		button2=tk.Button(self, text="NEXT", command=self.enter)
 		button2.grid(row=7, column=2, sticky='w')
@@ -314,16 +318,16 @@ class VehicleType(Frame):
 		
 
 
-		label=tk.Label(self, text="VEHICLE TYPE", font=LARGE_FONT)
+		label=tk.Label(self, text="CHOOSE VEHICLE TYPE", font=LARGE_FONT)
 
 		button1=tk.Button(self, text="CAR", command=lambda: controller.show_frame(CAR), height=3, width=8)
 		button2=tk.Button(self, text="BIKE", command=lambda: controller.show_frame(BIKE), height=3, width=8)
 		button3=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(Customer_details))
 
-		label.grid(row=0, column=1, sticky='w')
-		button1.grid(row=3, column=0, sticky='e')
-		button2.grid(row=3, column=3, sticky='e')
-		button3.grid(row=4, column=0, sticky='w')
+		label.grid(row=0, column=1, sticky='w',padx=20, pady=20)
+		button1.grid(row=3, column=0, sticky='e',padx=20, pady=20)
+		button2.grid(row=3, column=1, sticky='e',padx=20, pady=20)
+		button3.grid(row=4, column=1, sticky='w',padx=20, pady=20)
 
 		# tree view for car
 
@@ -358,7 +362,7 @@ class VehicleType(Frame):
 		# tree view for bikes
 		bike_tree=Treeview(self)
 
-		bike_tree["columns"]=("#1", "#2","#3","#4","#5", "#6", "#7")
+		bike_tree["columns"]=("#1", "#2","#3","#4","#5")
 		bike_tree.heading("#1",text="BIKE MAKE")
 		bike_tree.heading("#2",text="BIKE MODEL")
 		bike_tree.heading("#3",text="1 Day")
@@ -390,33 +394,33 @@ class CAR(tk.Frame):
 		self.current_trans=Text(self, height=2, width=30)
 		
 
-		self.label.grid(row=0,column=1,sticky='w')
-		self.CID.grid(row=1, column=0, sticky='w')
-		self.current_id.grid(row=1, column=1, sticky='w')
-		self.transID.grid(row=2, column=0, sticky='w')
-		self.current_trans.grid(row=2, column=1, sticky='w')
+		self.label.grid(row=0,column=1,sticky='w',padx=20, pady=20)
+		self.CID.grid(row=1, column=0, sticky='w',padx=20, pady=20)
+		self.current_id.grid(row=1, column=1, sticky='w',padx=20, pady=20)
+		self.transID.grid(row=2, column=0, sticky='w',padx=20, pady=20)
+		self.current_trans.grid(row=2, column=1, sticky='w',padx=20, pady=20)
 
 		self.DatePicked=datetime.date(1984, 6, 24)
 		#adding radio buttons for choosing car
 		self.cars=[("Swift",0), ("Polo",1), ("XUV",2), ("Fortuner",3)]
 		self.label1=tk.Label(self, text="Choose Car: ", font=SMALL_FONT)
-		self.label1.grid(row=3,column=0, sticky=W)
+		self.label1.grid(row=3,column=0, sticky=W,padx=20, pady=20)
 
 		
 		self.var=StringVar()
-		self.r1=Radiobutton(self, text="SWIFT", variable=self.var, value="Swift", command=self.asign).grid(row=3, column=1, sticky='w')
-		self.r2=Radiobutton(self, text="POLO", variable=self.var, value="Polo", command=self.asign).grid(row=4, column=1, sticky='w')
-		self.r3=Radiobutton(self, text="XUV", variable=self.var, value="XUV", command=self.asign).grid(row=5, column=1, sticky='w')
-		self.r4=Radiobutton(self, text="FORTUNER", variable=self.var, value="Fortuner", command=self.asign).grid(row=6, column=1, sticky='w')
+		self.r1=Radiobutton(self, text="SWIFT", variable=self.var, value="Swift", command=self.asign).grid(row=3, column=1, sticky='w',padx=20, pady=20)
+		self.r2=Radiobutton(self, text="POLO", variable=self.var, value="Polo", command=self.asign).grid(row=4, column=1, sticky='w',padx=20, pady=20)
+		self.r3=Radiobutton(self, text="XUV", variable=self.var, value="XUV", command=self.asign).grid(row=5, column=1, sticky='w',padx=20, pady=20)
+		self.r4=Radiobutton(self, text="FORTUNER", variable=self.var, value="Fortuner", command=self.asign).grid(row=6, column=1, sticky='w',padx=20, pady=20)
 
 		
 		#Adding calender to select date
-		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=7, column=0,sticky='w')
-		ttk.Button(self, text='Calendar', command=lambda: self.opencal("Calendar")).grid(row=7,column=1, sticky='w')
+		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=7, column=0,sticky='w',padx=20, pady=20)
+		ttk.Button(self, text='Calendar', command=lambda: self.opencal("Calendar")).grid(row=7,column=1, sticky='w',padx=20, pady=20)
 
 		#adding dropdown box for plan selection
 		self.label2=ttk.Label(self, text="Choose plan", font=SMALL_FONT)
-		self.label2.grid(row=8,column=0,sticky='w')
+		self.label2.grid(row=8,column=0,sticky='w',padx=20, pady=20)
 
 		options=["1 Day","5 Days", "10 Days","15 Days", "30 Days"] 	
 
@@ -424,16 +428,16 @@ class CAR(tk.Frame):
 		self.variable.set(options[0])
 
 		self.w=OptionMenu(self,self.variable, *options)
-		self.w.grid(row=8,column=1,sticky='w')
+		self.w.grid(row=8,column=1,sticky='w',padx=20, pady=20)
 
 		#Adding the back and next button
 		self.button1=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(VehicleType))
 		self.button2=ttk.Button(self, text="NEXT", command=self.adding) 
-		self.button3=ttk.Button(self, text="BILL", command=lambda: controller.show_frame(BILL))
 
-		self.button1.grid(row=9, column=0, sticky='w')
-		self.button2.grid(row=9, column=1, sticky='w')
-		self.button3.grid(row=9, column=2, sticky='w')
+
+		self.button1.grid(row=9, column=0, sticky='w',padx=20, pady=20)
+		self.button2.grid(row=9, column=1, sticky='w',padx=20, pady=20)
+
 
 	def print_sel(self):
 		self.DatePicked=(self.cal.selection_get()).strftime('%m/%d/%Y')
@@ -486,35 +490,41 @@ class BIKE(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
 		self.controller=controller
-		self.choice="BIKE"
-		self.CID=Label(self, text="ENTER CURRENT CUSTOMER ID:", font=SMALL_FONT)
-		self.current_id=Text(self, height=2, width=30)
 		self.label=tk.Label(self, text="BIKE DETAILS", font=LARGE_FONT)
-		self.label.grid(row=0,column=1,sticky='w')
-		self.CID.grid(row=1, column=0, sticky='w')
-		self.current_id.grid(row=1, column=1, sticky='w')
+		self.CID=Label(self, text="ENTER CURRENT CUSTOMER ID:", font=SMALL_FONT)
+		self.transID=Label(self, text="ENTER TRANSACTION ID:", font=SMALL_FONT)
+		self.current_id=Text(self, height=2, width=30)
+		self.current_trans=Text(self, height=2, width=30)
+
+
+		self.label.grid(row=0,column=1,sticky='w',padx=20, pady=20)
+		self.CID.grid(row=1, column=0, sticky='w',padx=20, pady=20)
+		self.current_id.grid(row=1, column=1, sticky='w',padx=20, pady=20)
+		self.transID.grid(row=2, column=0, sticky='w',padx=20, pady=20)
+		self.current_trans.grid(row=2, column=1, sticky='w',padx=20, pady=20)
+
 
 		self.DatePicked=datetime.date(1984, 6, 24)
 		#adding radio buttons for choosing car
 		self.bikes=[("Pulsar",0), ("Splendor",1), ("X-Blade",2), ("FZ-S",3)]
 		self.label1=tk.Label(self, text="Choose Bike: ", font=SMALL_FONT)
-		self.label1.grid(row=2,column=0, sticky=W)
+		self.label1.grid(row=3,column=0, sticky=W,padx=20, pady=20)
 
 		
 		self.var=StringVar()
-		self.r1=Radiobutton(self, text="PULSAR", variable=self.var, value="Pulsar", command=self.asign).grid(row=2, column=1, sticky='w')
-		self.r2=Radiobutton(self, text="SPLENDOR", variable=self.var, value="Splendor", command=self.asign).grid(row=3, column=1, sticky='w')
-		self.r3=Radiobutton(self, text="X-BLADE", variable=self.var, value="X-Blade", command=self.asign).grid(row=4, column=1, sticky='w')
-		self.r4=Radiobutton(self, text="FZ-S", variable=self.var, value="FZ-S", command=self.asign).grid(row=5, column=1, sticky='w')
+		self.r1=Radiobutton(self, text="PULSAR", variable=self.var, value="Pulsar", command=self.asign).grid(row=3, column=1, sticky='w',padx=20, pady=20)
+		self.r2=Radiobutton(self, text="SPLENDOR", variable=self.var, value="Splendor", command=self.asign).grid(row=4, column=1, sticky='w',padx=20, pady=20)
+		self.r3=Radiobutton(self, text="X-BLADE", variable=self.var, value="X-Blade", command=self.asign).grid(row=5, column=1, sticky='w',padx=20, pady=20)
+		self.r4=Radiobutton(self, text="FZ-S", variable=self.var, value="FZ-S", command=self.asign).grid(row=6, column=1, sticky='w',padx=20, pady=20)
 
 		
 		#Adding calender to select date
-		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=6, column=0,sticky='w')
-		ttk.Button(self, text='Calendar', command=lambda: self.opencal("Calendar")).grid(row=6,column=1, sticky='w')
+		ttk.Label(self, text="Date: ", font=SMALL_FONT).grid(row=7, column=0,sticky='w',padx=20, pady=20)
+		ttk.Button(self, text='Calendar', command=lambda: self.opencal("Calendar")).grid(row=7,column=1, sticky='w',padx=20, pady=20)
 
 		#adding dropdown box for plan selection
 		self.label2=ttk.Label(self, text="Choose plan", font=SMALL_FONT)
-		self.label2.grid(row=7,column=0,sticky='w')
+		self.label2.grid(row=8,column=0,sticky='w',padx=20, pady=20)
 
 		options=["1 Day","5 Days", "10 Days"] 	
 
@@ -522,14 +532,14 @@ class BIKE(tk.Frame):
 		self.variable.set(options[0])
 
 		self.w=OptionMenu(self,self.variable, *options)
-		self.w.grid(row=7,column=1,sticky='w')
+		self.w.grid(row=8,column=1,sticky='w',padx=20, pady=20)
 
 		#Adding the back and next button
 		self.button1=ttk.Button(self, text="BACK", command=lambda: controller.show_frame(VehicleType))
 		self.button2=ttk.Button(self, text="NEXT", command=self.adding) 
 
-		self.button1.grid(row=8, column=0, sticky='w')
-		self.button2.grid(row=8, column=1, sticky='w')
+		self.button1.grid(row=9, column=0, sticky='w',padx=20, pady=20)
+		self.button2.grid(row=9, column=1, sticky='w',padx=20, pady=20)
 
 	def adding(self):
 
@@ -543,10 +553,10 @@ class BIKE(tk.Frame):
 			self.day="five_days"
 		elif self.days=="10 Days":
 			self.day="ten_days"
-		self.car_price=calculating_bike_price(self.day, self.BikeChoice, 0)
+		self.bike_price=calculating_bike_price(self.day, self.BikeChoice, 0)
 		self.CarChoice="-"
 		self.customer_name=get_customer_name(self.CID,"")	
-		inserting_trsaction(self.CID, self.customer_name, self.tid, self.CarChoice, self.BikeChoice, self.DatePicked, self.days, self.car_price)
+		inserting_trsaction(self.CID, self.customer_name, self.tid, self.CarChoice, self.BikeChoice, self.DatePicked, self.days, self.bike_price)
 
 	def print_sel(self):
 		self.DatePicked=(self.cal.selection_get()).strftime('%m/%d/%Y')
@@ -600,6 +610,9 @@ class BILL(Frame):
 
 		for i in headingss:
 			bike_tree.insert("",'end', values=i)
+
+		self.back=Button(self, text="BACK", command=lambda:controller.show_frame(Second_page))
+		self.back.grid(row=3, column=0, sticky='w',padx=20, pady=20)
 
 	
 

@@ -99,7 +99,6 @@ def retrieve_login(emp_id, emp_pass):
 		return 0
 	else:
 		return 1
-	db.commit
 
 def get_bill():
 	cur.callproc('bill')
